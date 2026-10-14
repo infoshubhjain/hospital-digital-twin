@@ -16,6 +16,7 @@ type Replication = {
   arrivals: number;
   completed: number;
   waits: number[];
+  stillWaiting: number;
   edUtilization: number;
   inpatientUtilization: number;
   providerUtilization: number;
@@ -243,6 +244,9 @@ function replicate(s: Scenario, seed: number): Replication {
     arrivals,
     completed,
     waits,
+    stillWaiting: patients.filter(
+      (patient) => patient.included && patient.state === "waiting",
+    ).length,
     edUtilization: Math.min(1, edArea / (metricTime * s.capacities.edBeds)),
     inpatientUtilization: Math.min(
       1,
@@ -285,6 +289,7 @@ export function simulate(
     completed: confidence(reps.map((r) => r.completed)),
     waitMedian: confidence(reps.map((r) => quantile(r.waits, 0.5))),
     waitP90: confidence(reps.map((r) => quantile(r.waits, 0.9))),
+    waitObservations: confidence(reps.map((r) => r.waits.length)),
     edUtilization: confidence(reps.map((r) => r.edUtilization * 100)),
     inpatientUtilization: confidence(
       reps.map((r) => r.inpatientUtilization * 100),
@@ -294,6 +299,7 @@ export function simulate(
     ),
     boardingHours: confidence(reps.map((r) => r.boardingHours)),
     stillInSystem: confidence(reps.map((r) => r.stillInSystem)),
+    stillWaiting: confidence(reps.map((r) => r.stillWaiting)),
   };
   const max = Math.max(1, ...reps[0]!.timeline.map((x) => x.hour));
   const timeline = Array.from(
@@ -343,6 +349,8 @@ export function simulate(
       stillInSystem: r.stillInSystem,
       waitMedian: quantile(r.waits, 0.5),
       waitP90: quantile(r.waits, 0.9),
+      waitObservations: r.waits.length,
+      stillWaiting: r.stillWaiting,
       edUtilization: r.edUtilization * 100,
       inpatientUtilization: r.inpatientUtilization * 100,
       providerUtilization: r.providerUtilization * 100,

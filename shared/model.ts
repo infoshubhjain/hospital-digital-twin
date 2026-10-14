@@ -60,11 +60,13 @@ export type Summary = {
   completed: Metric;
   waitMedian: Metric;
   waitP90: Metric;
+  waitObservations: Metric;
   edUtilization: Metric;
   inpatientUtilization: Metric;
   providerUtilization: Metric;
   boardingHours: Metric;
   stillInSystem: Metric;
+  stillWaiting: Metric;
 };
 export type SimulationResult = {
   id: string;

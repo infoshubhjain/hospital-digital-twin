@@ -7,6 +7,10 @@ import { simulate } from "../shared/simulation.js";
 
 export function createApp() {
   const app = express();
+  const proxyHops = Number(process.env.TRUST_PROXY_HOPS ?? 0);
+  if (!Number.isInteger(proxyHops) || proxyHops < 0 || proxyHops > 5)
+    throw new Error("TRUST_PROXY_HOPS must be an integer from 0 to 5.");
+  app.set("trust proxy", proxyHops);
   const results = new Map<string, ReturnType<typeof simulate>>();
   app.disable("x-powered-by");
   app.use(

@@ -89,6 +89,25 @@ describe("discrete-event model", () => {
       );
   });
 
+  it("reports patients still waiting separately from observed wait percentiles", () => {
+    const congested = {
+      ...demoScenario,
+      arrivalRates: [80, 80, 80, 80],
+      horizonHours: 6,
+      warmupHours: 0,
+      replications: 4,
+      capacities: { providers: 1, edBeds: 1, inpatientBeds: 1 },
+      admissionRate: 0,
+      serviceMinutes: { high: 600, medium: 600, low: 600 },
+    };
+    const result = simulate(congested, "censored-waits");
+    for (const replication of result.replicationMetrics) {
+      expect(replication.stillWaiting).toBeGreaterThan(0);
+      expect(replication.waitObservations).toBeLessThan(replication.arrivals);
+    }
+    expect(result.summary.stillWaiting.mean).toBeGreaterThan(0);
+  });
+
   it("narrows the seeded wait-time interval as replications increase", () => {
     const small = simulate({ ...demoScenario, replications: 8 }, "convergence");
     const larger = simulate(

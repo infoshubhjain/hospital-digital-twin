@@ -56,7 +56,7 @@ The Vite/React client and Express API are one deployable app. `shared/simulation
 
 **Measurement and accounting:** warm-up arrivals seed the system but are excluded from arrival, completion, and wait cohorts. The measurement horizon begins after warm-up. Completed means the patient leaves the simulated hospital system, including the inpatient stay for an admitted patient. At the horizon, `arrivals = completed + still in system` for the measured arrival cohort. Utilization is occupied ED or inpatient bed-minutes, or busy provider-minutes, divided by configured capacity times measurement minutes. Boarding is reported as occupied ED bed-hours for patients waiting for an inpatient bed. The result timeline includes replication-average ED and inpatient occupancy, waiting ED queue, and boarded patients at hourly snapshots.
 
-Median and 90th percentile waits measure time to start ED care among measured arrivals who reach care before the horizon. Patients still waiting at the cutoff remain in the queue and still-in-system count; they are not treated as completed waits.
+Median and 90th percentile waits measure time to start ED care only among measured arrivals who reach care before the horizon. The dashboard and exports also report wait observations and patients still waiting at the cutoff for each replication. Those queued waits are not included in the percentiles, so interpret the percentiles together with the waiting count; a low percentile does not imply a short wait for patients still in queue.
 
 **Uncertainty:** replications use independent deterministic seeds derived from the base seed. The paired intervention uses corresponding seeds. Summary confidence intervals use the normal approximation `mean ± 1.96 × sample standard deviation / √n`, clipped at zero for nonnegative measures. Intervals can vary non-monotonically for finite samples; more replications usually reduce sampling error but do not resolve input uncertainty or model error.
 
@@ -98,6 +98,8 @@ npm run test:e2e
 ```
 
 The browser smoke test edits the example assumptions, selects an intervention, runs the paired comparison, checks the mobile layout, and downloads JSON. CI runs linting, type checks, unit/API/UI tests, build, and the Chromium smoke test on pull requests and pushes to `main`.
+
+When deploying behind a reverse proxy, set `TRUST_PROXY_HOPS` to the exact number of trusted proxy hops and ensure the app cannot be reached around those proxies. It defaults to `0`, which ignores forwarded client-IP headers.
 
 ## Troubleshooting
 

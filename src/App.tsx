@@ -278,7 +278,7 @@ export default function App() {
             stats.mean,
             stats.low,
             stats.high,
-            metric.toLowerCase().includes("wait")
+            metric === "waitMedian" || metric === "waitP90"
               ? "minutes"
               : metric.toLowerCase().includes("utilization")
                 ? "percent"
@@ -317,7 +317,7 @@ export default function App() {
   const metricCards = result
     ? [
         {
-          label: "Median wait",
+          label: "Median wait · reached care",
           icon: Clock3,
           value: fmt(result.waitMedian.mean),
           unit: "min",
@@ -334,7 +334,7 @@ export default function App() {
                 : ("up" as const),
         },
         {
-          label: "90th percentile wait",
+          label: "90th percentile · reached care",
           icon: Activity,
           value: fmt(result.waitP90.mean),
           unit: "min",
@@ -511,10 +511,13 @@ export default function App() {
                   ? `Results from ${scenario.replications} independent replications · updated ${ranAt}`
                   : "Run the example to see simulated results."}
               </p>
-              {base && (
+              {base && result && (
                 <small className="measure-note">
-                  Waits include patients who started ED care by the horizon;
-                  others remain in the queue.
+                  Wait percentiles include only patients who started ED care by
+                  the horizon. On average, {fmt(result.waitObservations.mean)}
+                  patients reached care and {fmt(result.stillWaiting.mean)}
+                  remained waiting per replication; queued waits are excluded
+                  from those percentiles.
                 </small>
               )}
             </div>
@@ -816,7 +819,7 @@ export default function App() {
                       "—"
                     )}
                   </strong>
-                  <span>Median wait</span>
+                  <span>Median wait · reached care</span>
                 </div>
                 <div className="compare-arrow">→</div>
                 <div>
@@ -830,7 +833,7 @@ export default function App() {
                       "—"
                     )}
                   </strong>
-                  <span>Median wait</span>
+                  <span>Median wait · reached care</span>
                 </div>
               </div>
               {change && base && (

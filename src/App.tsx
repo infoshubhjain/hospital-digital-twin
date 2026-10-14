@@ -25,6 +25,7 @@ import {
   type Scenario,
   type SimulationResult,
 } from "../shared/model.js";
+import { pairedEffect } from "../shared/statistics.js";
 
 type Intervention = "staff" | "beds" | "routing";
 const blocks = ["12 am – 6 am", "6 am – 12 pm", "12 pm – 6 pm", "6 pm – 12 am"];
@@ -196,11 +197,15 @@ export default function App() {
       };
     });
   const result = base?.summary;
+  const pairedWait = base && change
+    ? pairedEffect(
+        base.replicationMetrics.map((rep) => rep.waitMedian!),
+        change.replicationMetrics.map((rep) => rep.waitMedian!),
+      )
+    : undefined;
   const waitChange =
-    base && change
-      ? Math.round(
-          change.summary.waitMedian.mean - base.summary.waitMedian.mean,
-        )
+    pairedWait
+      ? Math.round(pairedWait.mean)
       : undefined;
   const chartData = base?.timeline ?? [];
   const interventionData = change?.timeline ?? [];
@@ -251,6 +256,7 @@ export default function App() {
           },
           baseline: base,
           intervention: change,
+          pairedWaitEffectMinutes: pairedWait,
         },
         null,
         2,
@@ -855,7 +861,7 @@ export default function App() {
                 </div>
               )}
               <div className="compare-note">
-                Paired replications use the same random seeds in both scenarios.
+                Positive effects mean longer waits. Paired 95% t interval: {pairedWait?.low === null || pairedWait?.low === undefined ? "unavailable" : `${fmt(pairedWait.low)} to ${fmt(pairedWait.high!)} min`} ({pairedWait?.replications ?? 0} replications). It describes simulation variability under these assumptions, not real-world uncertainty.
               </div>
               <button
                 className="text-button"

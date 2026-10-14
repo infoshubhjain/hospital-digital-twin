@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { demoScenario, scenarioSchema } from "./model.js";
 import { simulate } from "./simulation.js";
+import { pairedEffect } from "./statistics.js";
 
 describe("scenario validation", () => {
   it("rejects impossible capacity, acuity totals, and warm-up length", () => {
@@ -22,6 +23,21 @@ describe("scenario validation", () => {
         warmupHours: demoScenario.horizonHours,
       }).success,
     ).toBe(false);
+  });
+});
+
+describe("paired intervention analysis", () => {
+  it("calculates a paired 95% t interval from replication-level effects", () => {
+    const effect = pairedEffect([10, 10, 10], [11, 12, 13]);
+    expect(effect.mean).toBe(2);
+    expect(effect.standardError).toBeCloseTo(1 / Math.sqrt(3), 12);
+    expect(effect.low).toBeCloseTo(-0.484, 2);
+    expect(effect.high).toBeCloseTo(4.484, 2);
+  });
+
+  it("reports unavailable intervals for one replication and validates pairs", () => {
+    expect(pairedEffect([2], [3])).toMatchObject({ mean: 1, low: null, high: null });
+    expect(() => pairedEffect([1], [1, 2])).toThrow(RangeError);
   });
 });
 

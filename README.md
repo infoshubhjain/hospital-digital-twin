@@ -31,7 +31,7 @@ Open http://localhost:3001. The app uses no persistence: the API keeps the lates
 3. Select an intervention (two added ED providers, four added ED beds, or a five percentage point lower admission share) and run the comparison.
 4. Inspect the wait-time estimates, utilization, boarding, and hourly queue timeline. Export JSON for complete replication output or CSV for summary metrics.
 
-The comparison pairs runs by reusing the same replication seeds. A 95% confidence interval is calculated across independent replications as mean ± 1.96 standard errors; it describes simulation variability under the entered assumptions. It is not a prediction interval for a real facility.
+The comparison pairs runs by reusing the same replication seeds. For each seed, the intervention wait median minus the baseline wait median is computed; the displayed paired effect uses the sample standard error and a two-sided 95% Student-t interval with n−1 degrees of freedom. Positive effects mean longer waits. This interval describes simulation variability under entered assumptions, not real-world or model uncertainty. Individual metric summary intervals use a normal approximation and are not the paired intervention interval.
 
 ## Architecture
 
@@ -58,7 +58,7 @@ The Vite/React client and Express API are one deployable app. `shared/simulation
 
 Median and 90th percentile waits measure time to start ED care only among measured arrivals who reach care before the horizon. The dashboard and exports also report wait observations and patients still waiting at the cutoff for each replication. Those queued waits are not included in the percentiles, so interpret the percentiles together with the waiting count; a low percentile does not imply a short wait for patients still in queue.
 
-**Uncertainty:** replications use independent deterministic seeds derived from the base seed. The paired intervention uses corresponding seeds. Summary confidence intervals use the normal approximation `mean ± 1.96 × sample standard deviation / √n`, clipped at zero for nonnegative measures. Intervals can vary non-monotonically for finite samples; more replications usually reduce sampling error but do not resolve input uncertainty or model error.
+**Uncertainty:** replications use independent deterministic seeds derived from the base seed. The paired intervention uses corresponding seeds. Individual summary confidence intervals use `mean ± 1.96 × sample standard deviation / √n`, clipped at zero for nonnegative measures. The intervention callout separately uses replication-level paired effects and the 95% Student-t critical value for n−1 degrees of freedom; it never subtracts separate interval endpoints. Intervals can vary non-monotonically for finite samples; more replications usually reduce sampling error but do not resolve input uncertainty or model error.
 
 **Not modeled:** nonstationary surges within the six-hour blocks, acuity-dependent routing/priority, patient choice, left-without-being-seen, diagnostics and service stages, staffing skill mix and shift schedules, breaks, transfers, readmissions, local policies, or empirically calibrated distributions. The admission-share intervention changes routing probability by assumption and does not model clinical suitability. Do not use outputs for care, staffing, investment, or operational decisions.
 

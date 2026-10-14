@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { readFile } from "node:fs/promises";
+import { mkdir, readFile } from "node:fs/promises";
 
 test("edit the synthetic example, compare scenarios and export results", async ({
   page,
@@ -18,6 +18,8 @@ test("edit the synthetic example, compare scenarios and export results", async (
   await expect(page.locator(".compare-columns strong").first()).toHaveText(
     /\d+ min/,
   );
+  await mkdir("docs/screenshots", { recursive: true });
+  await page.screenshot({ path: "docs/screenshots/desktop.png", fullPage: true });
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "JSON" }).click();
   const jsonDownload = await download;
@@ -39,10 +41,16 @@ test("edit the synthetic example, compare scenarios and export results", async (
 test("scenario assumptions remain available on a mobile screen", async ({
   page,
 }) => {
+  await page.setViewportSize({ width: 720, height: 900 });
+  await page.goto("/");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(720);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await expect(
     page.getByRole("heading", { name: "Scenario assumptions" }),
   ).toBeVisible();
   await expect(page.getByLabel("ED beds")).toBeVisible();
+  await page.getByRole("button", { name: "Run simulation" }).click();
+  await expect(page.getByText(/Results from 24 independent replications/)).toBeVisible({ timeout: 30_000 });
+  await page.screenshot({ path: "docs/screenshots/mobile.png", fullPage: true });
 });

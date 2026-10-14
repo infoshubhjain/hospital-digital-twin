@@ -4,6 +4,10 @@ Haven is an educational operations-planning demonstrator. Edit a representative 
 
 **This is not a clinical system, a staffing directive, or a forecast of any real hospital.** All included scenario values are synthetic. Do not enter patient identifiers, protected health information, or facility confidential data.
 
+![Haven scenario comparison after a simulation run](docs/screenshots/desktop.png)
+
+[Mobile workflow screenshot](docs/screenshots/mobile.png)
+
 ## Run locally
 
 Requires Node.js 22.12 or newer.

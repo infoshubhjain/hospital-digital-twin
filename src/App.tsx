@@ -861,7 +861,7 @@ export default function App() {
                 </div>
               )}
               <div className="compare-note">
-                Positive effects mean longer waits. Paired 95% t interval: {pairedWait?.low === null || pairedWait?.low === undefined ? "unavailable" : `${fmt(pairedWait.low)} to ${fmt(pairedWait.high!)} min`} ({pairedWait?.replications ?? 0} replications). It describes simulation variability under these assumptions, not real-world uncertainty.
+                Positive effects mean longer waits. Paired 95% t interval: {pairedWait?.low === null || pairedWait?.low === undefined ? "unavailable" : `${fmt(pairedWait.low)} to ${fmt(pairedWait.high!)} min`} ({pairedWait?.replications ?? 0} replications). Observed variance reduction vs independent runs: {pairedWait?.varianceReductionPercent === null || pairedWait?.varianceReductionPercent === undefined ? "unavailable" : `${fmt(pairedWait.varianceReductionPercent)}%`}. It describes simulation variability under these assumptions, not real-world uncertainty.
               </div>
               <button
                 className="text-button"

@@ -33,6 +33,8 @@ Open http://localhost:3001. The app uses no persistence: the API keeps the lates
 
 The comparison pairs runs by reusing the same replication seeds. For each seed, the intervention wait median minus the baseline wait median is computed; the displayed paired effect uses the sample standard error and a two-sided 95% Student-t interval with n−1 degrees of freedom. Positive effects mean longer waits. This interval describes simulation variability under entered assumptions, not real-world or model uncertainty. Individual metric summary intervals use a normal approximation and are not the paired intervention interval.
 
+The intervention panel also reports the observed variance reduction of the paired estimator relative to an independent-run estimate from the two marginal sample variances. This diagnostic can be negative (pairing increased observed variance) and is unavailable when the marginal variance is zero or there is only one replication; it is not evidence that the model is calibrated.
+
 ## Architecture
 
 ```mermaid

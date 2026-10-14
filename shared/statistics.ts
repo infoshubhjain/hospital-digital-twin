@@ -4,6 +4,7 @@ export type PairedEffect = {
   low: number | null;
   high: number | null;
   replications: number;
+  varianceReductionPercent: number | null;
 };
 
 function logGamma(z: number): number {
@@ -67,9 +68,17 @@ export function pairedEffect(baseline: number[], intervention: number[]): Paired
   }
   const effects = baseline.map((value, i) => intervention[i]! - value);
   const mean = effects.reduce((sum, value) => sum + value, 0) / effects.length;
-  if (effects.length < 2) return { mean, standardError: null, low: null, high: null, replications: 1 };
+  if (effects.length < 2) return { mean, standardError: null, low: null, high: null, replications: 1, varianceReductionPercent: null };
+  const sampleVariance = (values: number[]) => {
+    const average = values.reduce((sum, value) => sum + value, 0) / values.length;
+    return values.reduce((sum, value) => sum + (value - average) ** 2, 0) / (values.length - 1);
+  };
+  const independentVariance = sampleVariance(baseline) + sampleVariance(intervention);
+  const varianceReductionPercent = independentVariance === 0
+    ? null
+    : 100 * (1 - sampleVariance(effects) / independentVariance);
   const variance = effects.reduce((sum, value) => sum + (value - mean) ** 2, 0) / (effects.length - 1);
   const standardError = Math.sqrt(variance / effects.length);
   const margin = tCritical95(effects.length - 1) * standardError;
-  return { mean, standardError, low: mean - margin, high: mean + margin, replications: effects.length };
+  return { mean, standardError, low: mean - margin, high: mean + margin, replications: effects.length, varianceReductionPercent };
 }

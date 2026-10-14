@@ -36,8 +36,14 @@ describe("paired intervention analysis", () => {
   });
 
   it("reports unavailable intervals for one replication and validates pairs", () => {
-    expect(pairedEffect([2], [3])).toMatchObject({ mean: 1, low: null, high: null });
+    expect(pairedEffect([2], [3])).toMatchObject({ mean: 1, low: null, high: null, varianceReductionPercent: null });
     expect(() => pairedEffect([1], [1, 2])).toThrow(RangeError);
+  });
+
+  it("reports observed paired variance reduction, including negative values", () => {
+    expect(pairedEffect([1, 2, 3], [2, 3, 4]).varianceReductionPercent).toBe(100);
+    expect(pairedEffect([1, 2, 3], [3, 2, 1]).varianceReductionPercent).toBe(-100);
+    expect(pairedEffect([4, 4, 4], [5, 5, 5]).varianceReductionPercent).toBeNull();
   });
 });
 

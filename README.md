@@ -110,4 +110,4 @@ When deploying behind a reverse proxy, set `TRUST_PROXY_HOPS` to the exact numbe
 
 ## Deployment
 
-The Docker image serves the production UI and API on port 3001 and can be deployed to a Node-compatible container host. No provider account or paid service is configured here. Configure a free or paid host yourself, keep TLS enabled, and use the public-hosting security notes above. This repository currently has no live deployment.
+The Docker image serves the production UI and API on port 3001. `render.yaml` prepares a free Render Blueprint with `/api/health` checks; connect the repository and explicitly create the service in Render to deploy it. No hosting account was connected from this workspace, so there is no live URL yet. Render free services can spin down while idle and have usage limits; review the [current free-plan details](https://render.com/docs/free) before deployment. Keep TLS enabled and follow the public-hosting security notes above.

@@ -71,6 +71,13 @@ describe("simulation API", () => {
     expect(await unknown.json()).toEqual({ error: "API route not found." });
   });
 
+  it("returns 404 instead of the app page for a missing asset", async () => {
+    const base = await endpoint();
+    const missing = await fetch(`${base}/assets/not-a-real-bundle.js`);
+    expect(missing.status).toBe(404);
+    expect(await missing.text()).not.toContain("<!doctype html>");
+  });
+
   it("applies the run limit to the forwarded client IP when proxy trust is configured", async () => {
     process.env.TRUST_PROXY_HOPS = "2";
     const base = await endpoint();

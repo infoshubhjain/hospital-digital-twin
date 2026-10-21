@@ -110,6 +110,7 @@ export function createApp() {
         index: false,
       }),
     );
+  app.use("/assets", (_req, res) => res.sendStatus(404));
   app.get("*path", (_req, res, next) => {
     if (process.env.NODE_ENV !== "production") return next();
     return res.sendFile(resolve(process.cwd(), "public/index.html"));

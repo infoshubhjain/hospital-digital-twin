@@ -1392,7 +1392,7 @@ body, .main-content { color: var(--ink); background: #f2f0e8; }
 .brand-mark { color: #285e51; background: #dce6d9; border-radius: 4px; }
 .nav-link { color: #65746a; border-radius: 3px; }
 .nav-link:hover { background: #e3e4d9; color: var(--ink); }
-.privacy-box { background: #f2f0e8; border-color: #d9ddd3; border-radius: 3px; }
+.privacy-box { background: #f2f0e8; border-color: #d9ddd3; border-radius: 3px; color: var(--ink); }
 .privacy-box p { color: #657469; }
 .model-tag, .profile { border-color: #d4d8ce; }
 .model-tag, .profile strong { color: #68766c; }

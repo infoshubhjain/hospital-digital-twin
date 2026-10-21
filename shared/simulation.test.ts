@@ -46,6 +46,24 @@ describe("paired intervention analysis", () => {
     expect(() => pairedEffect([1], [1, 2])).toThrow(RangeError);
   });
 
+  it("matches reference t intervals through the maximum replication count", () => {
+    // Reference 95% t critical values: df 7, 23, 63, and 99.
+    for (const [replications, margin] of [
+      [8, 0.894],
+      [24, 0.431],
+      [64, 0.252],
+      [100, 0.199],
+    ]) {
+      const intervention = Array.from(
+        { length: replications },
+        (_, i) => (i < replications / 2 ? -1 : 1),
+      );
+      const effect = pairedEffect(Array(replications).fill(0), intervention);
+      expect(effect.low).toBeCloseTo(-margin, 3);
+      expect(effect.high).toBeCloseTo(margin, 3);
+    }
+  });
+
   it("reports observed paired variance reduction, including negative values", () => {
     expect(pairedEffect([1, 2, 3], [2, 3, 4]).varianceReductionPercent).toBe(100);
     expect(pairedEffect([1, 2, 3], [3, 2, 1]).varianceReductionPercent).toBe(-100);

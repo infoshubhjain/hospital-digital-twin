@@ -98,6 +98,10 @@ export default function App() {
   const [error, setError] = useState("");
   const [guideOpen, setGuideOpen] = useState(true);
   const [ranAt, setRanAt] = useState("");
+  const interventionHasNoEffect =
+    (intervention === "staff" && scenario.capacities.providers >= 100) ||
+    (intervention === "beds" && scenario.capacities.edBeds >= 500) ||
+    (intervention === "routing" && scenario.admissionRate <= 0);
 
   const run = useCallback(
     async (input: Scenario, selectedIntervention = intervention) => {
@@ -464,7 +468,7 @@ export default function App() {
               <button
                 className="button button-primary"
                 onClick={() => void run(scenario)}
-                disabled={busy}
+                disabled={busy || interventionHasNoEffect}
               >
                 {busy ? (
                   <LoaderCircle className="spin" size={17} />
@@ -813,6 +817,12 @@ export default function App() {
                 <option value="beds">Add 4 ED beds</option>
                 <option value="routing">Reduce admission rate by 5 pts</option>
               </select>
+              {interventionHasNoEffect && (
+                <p className="helper-text" role="status">
+                  This intervention cannot change the current scenario. Choose
+                  another intervention or change the assumption.
+                </p>
+              )}
               <div className="compare-columns">
                 <div>
                   <small>BASELINE</small>
@@ -866,7 +876,7 @@ export default function App() {
               <button
                 className="text-button"
                 onClick={() => void run(scenario)}
-                disabled={busy}
+                disabled={busy || interventionHasNoEffect}
               >
                 {busy ? "Running comparison…" : "Re-run comparison"}{" "}
                 <span>→</span>
@@ -1173,7 +1183,7 @@ export default function App() {
               <button
                 className="button button-primary run-bottom"
                 onClick={() => void run(scenario)}
-                disabled={busy}
+                disabled={busy || interventionHasNoEffect}
               >
                 {busy ? (
                   <LoaderCircle size={16} className="spin" />

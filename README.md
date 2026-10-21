@@ -113,7 +113,7 @@ When deploying behind a reverse proxy, set `TRUST_PROXY_HOPS` to the exact numbe
 
 - If port 3001 is occupied, set `PORT` in your environment; Vite reads the same value for its API proxy.
 - If a run is rejected as too large, lower the horizon, arrival rates, or replication count; the API has a bounded work budget.
-- Results disappear on server restart and after the in-memory cache evicts older runs; run the same seed and configuration again to reproduce them.
+- Results remain in the current page only. After reloading the page or changing assumptions, run the same seed and configuration again to reproduce them.
 - If Playwright cannot launch Chromium, run `npx playwright install chromium`.
 
 ## Deployment

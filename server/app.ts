@@ -1,5 +1,5 @@
 import express from "express";
-import helmet from "helmet";
+import { default as helmet } from "helmet";
 import { ipKeyGenerator, rateLimit } from "express-rate-limit";
 import { resolve } from "node:path";
 import { scenarioSchema } from "../shared/model.js";

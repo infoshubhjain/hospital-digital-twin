@@ -1,5 +1,5 @@
 import express from "express";
-import { default as helmet } from "helmet";
+import * as helmet from "helmet";
 import { ipKeyGenerator, rateLimit } from "express-rate-limit";
 import { resolve } from "node:path";
 import { scenarioSchema } from "../shared/model.js";
@@ -14,7 +14,7 @@ export function createApp() {
   const results = new Map<string, ReturnType<typeof simulate>>();
   app.disable("x-powered-by");
   app.use(
-    helmet({
+    helmet.default({
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],

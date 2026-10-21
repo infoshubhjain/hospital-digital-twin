@@ -20,7 +20,7 @@ afterEach(() => {
 });
 
 describe("simulation API", () => {
-  it("serves health, rejects invalid assumptions, runs and retrieves results", async () => {
+  it("serves health, rejects invalid assumptions, runs simulations, and returns JSON for unknown API routes", async () => {
     const base = await endpoint();
     const health = await fetch(`${base}/api/health`);
     expect(((await health.json()) as { status: string }).status).toBe("ok");
@@ -64,10 +64,11 @@ describe("simulation API", () => {
       }),
     });
     expect(response.status).toBe(201);
-    const result = (await response.json()) as { id: string };
-    const stored = await fetch(`${base}/api/simulations/${result.id}`);
-    expect(((await stored.json()) as { id: string }).id).toBe(result.id);
-    expect((await fetch(`${base}/api/simulations/missing`)).status).toBe(404);
+    expect(response.headers.get("content-type")).toContain("application/json");
+    const unknown = await fetch(`${base}/api/does-not-exist`);
+    expect(unknown.status).toBe(404);
+    expect(unknown.headers.get("content-type")).toContain("application/json");
+    expect(await unknown.json()).toEqual({ error: "API route not found." });
   });
 
   it("applies the run limit to the forwarded client IP when proxy trust is configured", async () => {

@@ -120,11 +120,6 @@ button:disabled {
   background: #f5f8f6;
   color: var(--ink);
 }
-.nav-link.active {
-  background: #eaf4f0;
-  color: #136e5d;
-  font-weight: 700;
-}
 .sidebar-bottom {
   margin-top: auto;
 }
@@ -1090,8 +1085,7 @@ h1 {
     margin: 0 auto 38px;
   }
   .brand > span:last-child,
-  .workspace-label,
-  .nav-link:not(.active) {
+  .workspace-label {
     display: none;
   }
   .nav-link {
@@ -1353,7 +1347,6 @@ body { color: var(--ink); background: #f4f7fb; font-size: 14px; }
 .brand small, .workspace-label { color: #9fb2c5; }
 .nav-link { color: #bccbd9; border-radius: 7px; }
 .nav-link:hover { background: #203c58; color: #fff; }
-.nav-link.active { background: #25465f; color: #8ce0d1; }
 .privacy-box { background: #1b3853; border-color: #35516a; color: #d9e5ef; }
 .privacy-box p, .model-tag { color: #aebfd0; }
 .model-tag, .profile { border-color: #35516a; }
@@ -1399,7 +1392,6 @@ body, .main-content { color: var(--ink); background: #f2f0e8; }
 .brand-mark { color: #285e51; background: #dce6d9; border-radius: 4px; }
 .nav-link { color: #65746a; border-radius: 3px; }
 .nav-link:hover { background: #e3e4d9; color: var(--ink); }
-.nav-link.active { color: #24584e; background: #dfe8df; box-shadow: inset 2px 0 #327467; }
 .privacy-box { background: #f2f0e8; border-color: #d9ddd3; border-radius: 3px; }
 .privacy-box p { color: #657469; }
 .model-tag, .profile { border-color: #d4d8ce; }

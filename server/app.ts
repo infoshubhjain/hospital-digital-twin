@@ -25,7 +25,6 @@ export function createApp() {
   if (!Number.isInteger(proxyHops) || proxyHops < 0 || proxyHops > 5)
     throw new Error("TRUST_PROXY_HOPS must be an integer from 0 to 5.");
   app.set("trust proxy", proxyHops);
-  const results = new Map<string, ReturnType<typeof simulate>>();
   app.disable("x-powered-by");
   app.use(
     contentSecurityPolicy({
@@ -93,8 +92,6 @@ export function createApp() {
         });
       try {
         const result = simulate(s);
-        results.set(result.id, result);
-        while (results.size > 12) results.delete(results.keys().next().value!);
         return res.status(201).json(result);
       } catch {
         return res.status(500).json({
@@ -103,15 +100,9 @@ export function createApp() {
       }
     },
   );
-  app.get("/api/simulations/:id", (req, res) => {
-    const result = results.get(req.params.id);
-    if (!result)
-      return res.status(404).json({
-        error:
-          "Result not found. Run the scenario again; results are held temporarily in memory.",
-      });
-    return res.json(result);
-  });
+  app.use("/api", (_req, res) =>
+    res.status(404).json({ error: "API route not found." }),
+  );
   if (process.env.NODE_ENV === "production")
     app.use(
       express.static(resolve(process.cwd(), "public"), {

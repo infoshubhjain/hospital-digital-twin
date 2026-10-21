@@ -18,8 +18,8 @@ test("edit the synthetic example, compare scenarios and export results", async (
   await expect(page.locator(".compare-columns strong").first()).toHaveText(
     /\d+ min/,
   );
-  await mkdir("docs/screenshots", { recursive: true });
-  await page.screenshot({ path: "docs/screenshots/desktop.png", fullPage: true });
+  await mkdir("test-results", { recursive: true });
+  await page.screenshot({ path: "test-results/desktop.png", fullPage: true });
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "JSON" }).click();
   const jsonDownload = await download;
@@ -52,5 +52,6 @@ test("scenario assumptions remain available on a mobile screen", async ({
   await expect(page.getByLabel("ED beds")).toBeVisible();
   await page.getByRole("button", { name: "Run simulation" }).click();
   await expect(page.getByText(/Results from 24 independent replications/)).toBeVisible({ timeout: 30_000 });
-  await page.screenshot({ path: "docs/screenshots/mobile.png", fullPage: true });
+  await mkdir("test-results", { recursive: true });
+  await page.screenshot({ path: "test-results/mobile.png", fullPage: true });
 });

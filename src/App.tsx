@@ -377,7 +377,7 @@ export default function App() {
         </a>
         <div className="workspace-label">WORKSPACE</div>
         <nav>
-          <a className="nav-link active" href="#overview">
+          <a className="nav-link" href="#overview">
             <Activity size={18} />
             Overview
           </a>
@@ -396,8 +396,8 @@ export default function App() {
               <Info size={16} />
             </span>
             <div>
-              <strong>Private by design</strong>
-              <p>No patient records are collected or stored.</p>
+              <strong>Synthetic inputs only</strong>
+              <p>Runs are sent to the server and not saved by the app. Never enter patient or confidential data.</p>
             </div>
           </div>
           <div className="model-tag">

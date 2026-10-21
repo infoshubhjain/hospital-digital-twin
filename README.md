@@ -19,14 +19,14 @@ npm run dev
 
 Open http://localhost:5173. The editor starts with an example scenario. Choose **Run simulation** to generate both baseline and intervention results. The API runs locally on port 3001. No account, API key, data provider, or network service is required at runtime.
 
-For a production build, run `npm run build` then `NODE_ENV=production npm start`. The frontend build is written to `public/`, where Vercel serves static assets; the Express app uses the same folder when run locally or in Docker. Or build and run the included Docker image:
+For a production build, run `npm run build` then `NODE_ENV=production npm start`. The frontend build is written to `public/`; the Express app serves it locally or in Docker, and Vercel serves the built assets. Or build and run the included Docker image:
 
 ```sh
 docker build -t hospital-digital-twin .
 docker run --rm -p 3001:3001 hospital-digital-twin
 ```
 
-Open http://localhost:3001. The app uses no persistence: the API keeps the latest 12 results in process memory and discards them on restart. A new run is required to retrieve an expired or restarted result.
+Open http://localhost:3001. The app uses no persistence: each simulation result is returned directly from its run request.
 
 ## Using the dashboard
 
@@ -49,7 +49,7 @@ flowchart LR
   API --> Schema[Shared Zod scenario schema]
   API --> Engine[Pure TypeScript discrete-event engine]
   Engine -->|seeded replications and summaries| API
-  API -->|in-memory last 12 results| UI
+  API -->|simulation response| UI
 ```
 
 The Vite/React client and Express API are one deployable app. `shared/simulation.ts` has no web framework dependency and can be tested independently. `shared/model.ts` defines the input limits and output units. `server/app.ts` validates the API boundary, limits JSON request size and POST rate, uses Helmet security headers, and caps estimated event work. There is no authentication because there are no users or persistent records.
@@ -78,14 +78,14 @@ There is no external operational dataset or public hospital data in this MVP. Ar
 
 - `GET /api/health` — health and model version.
 - `POST /api/simulations` — validate a scenario, run it, and return a result. Scenario bounds are defined in `shared/model.ts`; JSON is limited to 64 KB, POST is limited to 20 requests per minute per IP, and estimated event work is capped. Runs execute synchronously one at a time in the Node event loop.
-- `GET /api/simulations/:id` — retrieve one of the latest 12 process-local results.
+- Unknown `/api` routes return a JSON 404 response.
 
 There is no CORS allowlist because the UI and API are served from one origin. No user data is written to disk. Network logs should be configured by any hosting provider to avoid retaining request bodies or precise user-entered assumptions longer than necessary.
 
 ## Security and privacy notes
 
-- No account, tracking, analytics, external data call, or patient record storage.
-- Do not send protected health information or sensitive operational data; API inputs are retained temporarily in memory as reproducibility metadata.
+- No account, tracking, analytics, external data call, or persistent app storage. Simulation inputs are sent to the API and used to produce the response.
+- Do not send protected health information or sensitive operational data. The hosting provider may process request metadata and logs; configure its retention settings appropriately.
 - Helmet adds content-security and other security headers. Server errors do not echo submitted values. API responses contain scenario assumptions and should be treated as user-provided data.
 - For public hosting, configure TLS, platform-level abuse protections, and logs without request bodies. The built-in per-process limiter is a basic guard and is not distributed across replicas.
 - Threat notes: oversized payloads and excessive estimated event work are rejected; browser scripts are restricted by CSP; without accounts there are no session cookies or cross-site state changes. A publicly hosted instance exposes its run endpoint to anyone and its host may observe request metadata, so keep the rate limit and avoid confidential assumptions.
@@ -118,6 +118,6 @@ When deploying behind a reverse proxy, set `TRUST_PROXY_HOPS` to the exact numbe
 
 ## Deployment
 
-The Express app is exported from the repository-root `index.ts` for Vercel. Vercel runs it as a Node.js function and serves the Vite build files from `public/`; importing the GitHub repository into Vercel and deploying the production branch creates the public site. Vercel supplies a sanitized `x-forwarded-for` client address, used for the per-IP run limit. The limiter is process-local and best effort across function instances; the in-memory result lookup is also temporary and may not be available on a later invocation. No database is required because the UI uses the result in the response to each run.
+The Express app is exported from the repository-root `index.ts` for Vercel. `vercel.json` selects the Express framework and `npm run build`; Vercel runs the app as a Node.js function and serves the Vite build files from `public/`. Import the GitHub repository into Vercel and deploy the production branch to create the public site. Vercel supplies a sanitized `x-forwarded-for` client address, used for the per-IP run limit. The limiter is process-local and best effort across function instances. No database is required because the UI uses the result in the response to each run.
 
 The Docker image serves the production UI and API on port 3001. `render.yaml` still prepares the equivalent Render deployment with `/api/health` checks. Both providers' free plans have usage and reliability limits; review [Vercel Hobby limits](https://vercel.com/docs/plans/hobby) and [Render free-plan details](https://render.com/docs/free) before choosing a public host. Keep TLS enabled and follow the public-hosting security notes above.

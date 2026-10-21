@@ -22,10 +22,10 @@ afterEach(() => {
 describe("simulation API", () => {
   it("serves health, rejects invalid assumptions, runs and retrieves results", async () => {
     const base = await endpoint();
-    expect(
-      ((await (await fetch(`${base}/api/health`)).json()) as { status: string })
-        .status,
-    ).toBe("ok");
+    const health = await fetch(`${base}/api/health`);
+    expect(((await health.json()) as { status: string }).status).toBe("ok");
+    expect(health.headers.get("content-security-policy")).toContain("default-src 'self'");
+    expect(health.headers.get("x-content-type-options")).toBe("nosniff");
     const invalid = await fetch(`${base}/api/simulations`, {
       method: "POST",
       headers: { "content-type": "application/json" },

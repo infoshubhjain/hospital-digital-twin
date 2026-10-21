@@ -1,5 +1,19 @@
 import express from "express";
-import * as helmet from "helmet";
+import {
+  contentSecurityPolicy,
+  crossOriginEmbedderPolicy,
+  crossOriginOpenerPolicy,
+  crossOriginResourcePolicy,
+  originAgentCluster,
+  referrerPolicy,
+  strictTransportSecurity,
+  xContentTypeOptions,
+  xDnsPrefetchControl,
+  xDownloadOptions,
+  xFrameOptions,
+  xPermittedCrossDomainPolicies,
+  xXssProtection,
+} from "helmet";
 import { ipKeyGenerator, rateLimit } from "express-rate-limit";
 import { resolve } from "node:path";
 import { scenarioSchema } from "../shared/model.js";
@@ -14,20 +28,30 @@ export function createApp() {
   const results = new Map<string, ReturnType<typeof simulate>>();
   app.disable("x-powered-by");
   app.use(
-    helmet.default({
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          scriptSrc: ["'self'"],
-          styleSrc: ["'self'", "'unsafe-inline'"],
-          imgSrc: ["'self'", "data:"],
-          connectSrc: ["'self'"],
-          fontSrc: ["'self'", "data:"],
-          objectSrc: ["'none'"],
-          frameAncestors: ["'none'"],
-        },
+    contentSecurityPolicy({
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:"],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'", "data:"],
+        objectSrc: ["'none'"],
+        frameAncestors: ["'none'"],
       },
     }),
+    crossOriginEmbedderPolicy(),
+    crossOriginOpenerPolicy(),
+    crossOriginResourcePolicy(),
+    originAgentCluster(),
+    referrerPolicy(),
+    strictTransportSecurity(),
+    xContentTypeOptions(),
+    xDnsPrefetchControl(),
+    xDownloadOptions(),
+    xFrameOptions(),
+    xPermittedCrossDomainPolicies(),
+    xXssProtection(),
   );
   app.use(express.json({ limit: "64kb", strict: true }));
   app.get("/api/health", (_req, res) =>

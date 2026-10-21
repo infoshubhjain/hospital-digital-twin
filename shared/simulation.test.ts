@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { demoScenario, scenarioSchema } from "./model.js";
 import { simulate } from "./simulation.js";
-import { pairedEffect } from "./statistics.js";
+import { meanInterval, pairedEffect } from "./statistics.js";
 
 describe("scenario validation", () => {
   it("rejects impossible capacity, acuity totals, and warm-up length", () => {
@@ -27,6 +27,12 @@ describe("scenario validation", () => {
 });
 
 describe("paired intervention analysis", () => {
+  it("uses a Student-t interval for independent summary metrics at low replication counts", () => {
+    expect(meanInterval([0, 10])).toEqual({ mean: 5, low: 0, high: 68.53 });
+    expect(() => meanInterval([1])).toThrow(RangeError);
+    expect(() => meanInterval([1, Number.NaN])).toThrow(RangeError);
+  });
+
   it("calculates a paired 95% t interval from replication-level effects", () => {
     const effect = pairedEffect([10, 10, 10], [11, 12, 13]);
     expect(effect.mean).toBe(2);

@@ -7,3 +7,5 @@ services:
     envVars:
       - key: PORT
         value: 3001
+      - key: TRUST_PROXY_HOPS
+        value: "2"

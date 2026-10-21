@@ -1,4 +1,5 @@
-import type { Metric, Scenario, SimulationResult, Summary } from "./model.js";
+import type { Scenario, SimulationResult, Summary } from "./model.js";
+import { meanInterval } from "./statistics.js";
 
 type Patient = {
   arrival: number;
@@ -264,19 +265,6 @@ function replicate(s: Scenario, seed: number): Replication {
   };
 }
 
-function confidence(values: number[]): Metric {
-  const mean = values.reduce((a, b) => a + b, 0) / values.length;
-  const variance =
-    values.reduce((a, x) => a + (x - mean) ** 2, 0) /
-    Math.max(1, values.length - 1);
-  const margin = 1.96 * Math.sqrt(variance / values.length);
-  return {
-    mean: Number(mean.toFixed(2)),
-    low: Number(Math.max(0, mean - margin).toFixed(2)),
-    high: Number((mean + margin).toFixed(2)),
-  };
-}
-
 export function simulate(
   s: Scenario,
   id: string = crypto.randomUUID(),
@@ -285,21 +273,21 @@ export function simulate(
     replicate(s, (s.seed + i * 2654435761) >>> 0),
   );
   const summary: Summary = {
-    arrivals: confidence(reps.map((r) => r.arrivals)),
-    completed: confidence(reps.map((r) => r.completed)),
-    waitMedian: confidence(reps.map((r) => quantile(r.waits, 0.5))),
-    waitP90: confidence(reps.map((r) => quantile(r.waits, 0.9))),
-    waitObservations: confidence(reps.map((r) => r.waits.length)),
-    edUtilization: confidence(reps.map((r) => r.edUtilization * 100)),
-    inpatientUtilization: confidence(
+    arrivals: meanInterval(reps.map((r) => r.arrivals)),
+    completed: meanInterval(reps.map((r) => r.completed)),
+    waitMedian: meanInterval(reps.map((r) => quantile(r.waits, 0.5))),
+    waitP90: meanInterval(reps.map((r) => quantile(r.waits, 0.9))),
+    waitObservations: meanInterval(reps.map((r) => r.waits.length)),
+    edUtilization: meanInterval(reps.map((r) => r.edUtilization * 100)),
+    inpatientUtilization: meanInterval(
       reps.map((r) => r.inpatientUtilization * 100),
     ),
-    providerUtilization: confidence(
+    providerUtilization: meanInterval(
       reps.map((r) => r.providerUtilization * 100),
     ),
-    boardingHours: confidence(reps.map((r) => r.boardingHours)),
-    stillInSystem: confidence(reps.map((r) => r.stillInSystem)),
-    stillWaiting: confidence(reps.map((r) => r.stillWaiting)),
+    boardingHours: meanInterval(reps.map((r) => r.boardingHours)),
+    stillInSystem: meanInterval(reps.map((r) => r.stillInSystem)),
+    stillWaiting: meanInterval(reps.map((r) => r.stillWaiting)),
   };
   const max = Math.max(1, ...reps[0]!.timeline.map((x) => x.hour));
   const timeline = Array.from(

@@ -3,6 +3,8 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  publicDir: false,
+  build: { outDir: "public" },
   server: {
     host: "127.0.0.1",
     proxy: { "/api": `http://localhost:${process.env.PORT ?? "3001"}` },

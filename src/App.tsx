@@ -528,7 +528,7 @@ export default function App() {
               )}
             </div>
             <span className="confidence-tag">
-              <span /> 95% confidence intervals
+              <span /> 95% Student-t intervals
             </span>
           </div>
           <section
@@ -1166,8 +1166,8 @@ export default function App() {
                 <Info size={15} />
                 <span>
                   Editing an acuity share adjusts the other two proportionally
-                  so the total stays at 100%. Confidence intervals show
-                  variation across independent replications.
+                  so the total stays at 100%. Student-t intervals summarize
+                  variation across independent replications, not model error.
                 </span>
               </div>
               <button

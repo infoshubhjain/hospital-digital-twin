@@ -13,5 +13,5 @@
     "types": ["node"],
     "allowImportingTsExtensions": true
   },
-  "include": ["server", "shared"]
+  "include": ["index.ts", "server", "shared"]
 }

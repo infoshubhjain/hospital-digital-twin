@@ -1,3 +1,5 @@
+import type { Metric } from "./model.js";
+
 export type PairedEffect = {
   mean: number;
   standardError: number | null;
@@ -59,6 +61,21 @@ function tCritical95(df: number): number {
     else high = t;
   }
   return (low + high) / 2;
+}
+
+/** Student-t interval over independent replication-level metric values. */
+export function meanInterval(values: number[]): Metric {
+  if (values.length < 2 || values.some((value) => !Number.isFinite(value))) {
+    throw new RangeError("Confidence intervals need at least two finite values.");
+  }
+  const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
+  const variance = values.reduce((sum, value) => sum + (value - mean) ** 2, 0) / (values.length - 1);
+  const margin = tCritical95(values.length - 1) * Math.sqrt(variance / values.length);
+  return {
+    mean: Number(mean.toFixed(2)),
+    low: Number(Math.max(0, mean - margin).toFixed(2)),
+    high: Number((mean + margin).toFixed(2)),
+  };
 }
 
 /** Positive effect means the intervention increased the metric. */

@@ -1,6 +1,6 @@
 import express from "express";
 import helmet from "helmet";
-import { rateLimit } from "express-rate-limit";
+import { ipKeyGenerator, rateLimit } from "express-rate-limit";
 import { resolve } from "node:path";
 import { scenarioSchema } from "../shared/model.js";
 import { simulate } from "../shared/simulation.js";
@@ -40,6 +40,12 @@ export function createApp() {
       limit: 20,
       standardHeaders: "draft-7",
       legacyHeaders: false,
+      keyGenerator: (req) => {
+        const vercelClientIp = process.env.VERCEL
+          ? req.get("x-forwarded-for")?.split(",", 1)[0]?.trim()
+          : undefined;
+        return ipKeyGenerator(vercelClientIp || req.ip || "unknown");
+      },
     }),
     (req, res) => {
       const parsed = scenarioSchema.safeParse(req.body);
@@ -84,14 +90,14 @@ export function createApp() {
   });
   if (process.env.NODE_ENV === "production")
     app.use(
-      express.static(resolve(process.cwd(), "dist"), {
+      express.static(resolve(process.cwd(), "public"), {
         maxAge: "1h",
         index: false,
       }),
     );
   app.get("*path", (_req, res, next) => {
     if (process.env.NODE_ENV !== "production") return next();
-    return res.sendFile(resolve(process.cwd(), "dist/index.html"));
+    return res.sendFile(resolve(process.cwd(), "public/index.html"));
   });
   app.use(
     (

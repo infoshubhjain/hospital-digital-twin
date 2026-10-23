@@ -14,4 +14,6 @@ COPY --from=build /app/public ./public
 COPY --from=build /app/server ./server
 COPY --from=build /app/shared ./shared
 EXPOSE 3001
+RUN addgroup -S app && adduser -S -G app app
+USER app
 CMD ["node", "--import", "tsx", "server/index.ts"]

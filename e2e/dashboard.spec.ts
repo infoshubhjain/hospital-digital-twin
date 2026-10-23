@@ -9,6 +9,8 @@ test("edit the synthetic example, compare scenarios and export results", async (
   await page.getByLabel("Arrivals per hour 6 am – 12 pm").fill("25");
   await page.getByLabel("Intervention").selectOption("beds");
   await page.getByRole("button", { name: "Run simulation" }).click();
+  await page.getByRole("slider", { name: "Inspect simulation hour" }).fill("3");
+  await expect(page.locator(".flow-inspector")).toContainText("Inspect hour");
   await expect(
     page.getByText(/Results from 24 independent replications/),
   ).toBeVisible({ timeout: 30_000 });

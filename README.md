@@ -30,12 +30,12 @@ docker run --rm -p 3001:3001 hospital-digital-twin
 
 Open http://localhost:3001. The app uses no persistence: each simulation result is returned directly from its run request.
 
-## Using the dashboard
+## Using the patient flow studio
 
 1. Review or change arrivals in four six-hour blocks, acuity mix, service-time medians, ED providers/beds, inpatient beds, and admission share.
 2. Set horizon, warm-up, replication count, and random seed.
 3. Select an intervention (two added ED providers, four added ED beds, or a five percentage point lower admission share) and run the comparison.
-4. Inspect the wait-time estimates, utilization, boarding, and hourly queue timeline. Export JSON for complete replication output or CSV for summary metrics.
+4. Scrub the care-pathway inspector to compare hourly queue, ED occupancy, boarding, and inpatient occupancy means, then inspect wait-time intervals and the full timeline. Export JSON for complete replication output or CSV for summary metrics.
 
 The comparison pairs runs by reusing the same replication seeds. For each seed, the intervention wait median minus the baseline wait median is computed; the displayed paired effect uses the sample standard error and a two-sided 95% Student-t interval with n−1 degrees of freedom. Positive effects mean longer waits. This interval describes simulation variability under entered assumptions, not real-world or model uncertainty. Individual summary metric intervals also use Student-t critical values, but are not the paired intervention interval.
 

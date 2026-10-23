@@ -98,6 +98,7 @@ export default function App() {
   const [error, setError] = useState("");
   const [guideOpen, setGuideOpen] = useState(true);
   const [ranAt, setRanAt] = useState("");
+  const [selectedHour, setSelectedHour] = useState(0);
   const interventionHasNoEffect =
     (intervention === "staff" && scenario.capacities.providers >= 100) ||
     (intervention === "beds" && scenario.capacities.edBeds >= 500) ||
@@ -213,6 +214,9 @@ export default function App() {
       : undefined;
   const chartData = base?.timeline ?? [];
   const interventionData = change?.timeline ?? [];
+  const inspectedIndex = Math.min(selectedHour, Math.max(0, chartData.length - 1));
+  const inspectedBase = chartData[inspectedIndex];
+  const inspectedChange = interventionData[inspectedIndex];
   const chartMax = Math.max(
     1,
     ...[...chartData, ...interventionData].flatMap((point) => [
@@ -381,9 +385,9 @@ export default function App() {
         </a>
         <div className="workspace-label">WORKSPACE</div>
         <nav>
-          <a className="nav-link" href="#overview">
+          <a className="nav-link" href="#flow-inspector">
             <Activity size={18} />
-            Overview
+            Patient flow
           </a>
           <a className="nav-link" href="#scenario">
             <SlidersHorizontal size={18} />
@@ -423,7 +427,7 @@ export default function App() {
           <div className="breadcrumbs">
             <span>Workspace</span>
             <span className="crumb-sep">/</span>
-            <strong>Operations overview</strong>
+            <strong>Patient flow studio</strong>
           </div>
           <div className="topbar-actions">
             <span className="data-pill">
@@ -447,7 +451,7 @@ export default function App() {
                 <span className="eyebrow-line" /> HOSPITAL OPERATIONS{" "}
                 <span className="eyebrow-dot">·</span> PLANNING
               </div>
-              <h1>Operations overview</h1>
+              <h1>Patient flow studio</h1>
               <p>
                 Explore how capacity and patient flow assumptions shape system
                 performance.
@@ -513,6 +517,24 @@ export default function App() {
               <button onClick={() => setError("")}>Dismiss</button>
             </div>
           )}
+          <section className="flow-inspector" id="flow-inspector" aria-labelledby="flow-inspector-title">
+            <div className="inspector-heading">
+              <div><span className="eyebrow">SIMULATION TRACE / HOURLY AVERAGES</span><h2 id="flow-inspector-title">Inside the care pathway</h2><p>Move through the simulated horizon to inspect where pressure builds. Values are means across replications, not individual patient records.</p></div>
+              <span className="inspector-hour">{inspectedBase ? `HOUR ${inspectedBase.hour}` : 'AWAITING RUN'}</span>
+            </div>
+            {inspectedBase ? <>
+              <label className="hour-scrubber">Inspect hour {inspectedBase.hour}<input type="range" min="0" max={chartData.length - 1} value={inspectedIndex} onChange={(event) => setSelectedHour(Number(event.target.value))} aria-label="Inspect simulation hour" /></label>
+              <div className="pathway-stages">
+                {([
+                  ['Waiting queue','queue'],
+                  ['ED beds occupied','edOccupancy'],
+                  ['Boarding','boarding'],
+                  ['Inpatient beds occupied','inpatientOccupancy'],
+                ] as const).map(([label,key],index) => <div className="pathway-stage" key={key}><span className="stage-index">0{index+1}</span><h3>{label}</h3><div className="stage-values"><strong>{inspectedBase[key]}</strong><span>baseline mean</span></div><div className="stage-compare"><b>{inspectedChange?.[key] ?? '—'}</b><span>intervention mean</span></div></div>)}
+              </div>
+              <p className="inspector-note">The stages describe simultaneous census measures at one hour. They do not track the same patients through a journey. Compare the full timeline and 95% intervals below before interpreting an intervention.</p>
+            </> : <div className="inspector-empty">Preparing the synthetic example. Run the simulation to inspect hourly capacity pressure.</div>}
+          </section>
           <div className="section-heading">
             <div>
               <h2>At a glance</h2>

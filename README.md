@@ -1,5 +1,7 @@
 # Hospital Operations Digital Twin
 
+**Live demo:** [hospital-digital-twin-mocha.vercel.app](https://hospital-digital-twin-mocha.vercel.app/)
+
 Haven is an educational operations-planning demonstrator. Edit a representative hospital scenario, run reproducible discrete-event simulations, compare a capacity or routing change, and export assumptions with results.
 
 **This is not a clinical system, a staffing directive, or a forecast of any real hospital.** All included scenario values are synthetic. Do not enter patient identifiers, protected health information, or facility confidential data.
@@ -118,6 +120,6 @@ When deploying behind a reverse proxy, set `TRUST_PROXY_HOPS` to the exact numbe
 
 ## Deployment
 
-The Express app is exported from the repository-root `index.ts` for Vercel. `vercel.json` selects the Express framework and `npm run build`; Vercel runs the app as a Node.js function and serves the Vite build files from `public/`. Import the GitHub repository into Vercel and deploy the production branch to create the public site. Vercel supplies a sanitized `x-forwarded-for` client address, used for the per-IP run limit. The limiter is process-local and best effort across function instances. No database is required because the UI uses the result in the response to each run.
+The Express app is exported from the repository-root `index.ts` for Vercel. `vercel.json` selects the Express framework and `npm run build`; Vercel runs the app as a Node.js function and serves the Vite build files from `public/`. The public deployment is linked above; its health endpoint and synthetic simulation were verified on 2026-10-23. Vercel supplies a sanitized `x-forwarded-for` client address, used for the per-IP run limit. The limiter is process-local and best effort across function instances. No database is required because the UI uses the result in the response to each run.
 
 The Docker image serves the production UI and API on port 3001. `render.yaml` still prepares the equivalent Render deployment with `/api/health` checks. Both providers' free plans have usage and reliability limits; review [Vercel Hobby limits](https://vercel.com/docs/plans/hobby) and [Render free-plan details](https://render.com/docs/free) before choosing a public host. Keep TLS enabled and follow the public-hosting security notes above.

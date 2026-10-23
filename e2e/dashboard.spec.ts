@@ -10,7 +10,16 @@ test("edit the synthetic example, compare scenarios and export results", async (
   await page.getByLabel("Intervention").selectOption("beds");
   await page.getByRole("button", { name: "Run simulation" }).click();
   await page.getByRole("slider", { name: "Inspect simulation hour" }).fill("3");
-  await expect(page.locator(".flow-inspector")).toContainText("Inspect hour");
+  const hourRow = page.locator(".chart-data tbody tr").nth(3);
+  const hour = (await hourRow.locator("th").textContent())!.trim();
+  await expect(page.locator(".flow-inspector")).toContainText(`Inspect hour ${hour}`);
+  const queue = await hourRow.locator("td").nth(2).textContent();
+  await expect(page.locator(".pathway-stage").first().locator(".stage-values strong")).toHaveText(queue!.trim());
+  await expect(page.locator(".selected-hour-line")).toHaveAttribute("aria-label", `Selected hour ${hour}`);
+  await page.getByRole("slider", { name: "Inspect simulation hour" }).focus();
+  await page.keyboard.press("ArrowRight");
+  const nextHour = (await page.locator(".chart-data tbody tr").nth(4).locator("th").textContent())!.trim();
+  await expect(page.locator(".selected-hour-line")).toHaveAttribute("aria-label", `Selected hour ${nextHour}`);
   await expect(
     page.getByText(/Results from 24 independent replications/),
   ).toBeVisible({ timeout: 30_000 });

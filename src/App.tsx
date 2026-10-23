@@ -633,6 +633,17 @@ export default function App() {
                     aria-label="Baseline and intervention emergency department occupancy, waiting queue, and boarding by hour"
                   >
                     <title>Patient flow timeline</title>
+                    <line
+                      className="selected-hour-line"
+                      x1={42 + (inspectedIndex * 668) / Math.max(1, chartData.length - 1)}
+                      x2={42 + (inspectedIndex * 668) / Math.max(1, chartData.length - 1)}
+                      y1="12"
+                      y2="174"
+                      stroke="#687a42"
+                      strokeWidth="1.5"
+                      strokeDasharray="4 4"
+                      aria-label={`Selected hour ${inspectedBase?.hour ?? 0}`}
+                    />
                     {Array.from({ length: 5 }, (_, i) => {
                       const y = 174 - i * 40.5;
                       return (

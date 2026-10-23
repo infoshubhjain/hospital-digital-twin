@@ -1,5 +1,7 @@
 # Hospital Operations Digital Twin
 
+[Frontend release audit](docs/frontend-audit.md)
+
 **Live demo:** [hospital-digital-twin-mocha.vercel.app](https://hospital-digital-twin-mocha.vercel.app/)
 
 Haven is an educational operations-planning demonstrator. Edit a representative hospital scenario, run reproducible discrete-event simulations, compare a capacity or routing change, and export assumptions with results.

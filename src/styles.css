@@ -1333,45 +1333,6 @@ h1 {
   margin: 8px 0 0;
 }
 
-/* Haven's palette keeps simulation evidence calm and easy to inspect. */
-:root {
-  color: #18283d; background: #f4f7fb;
-  --ink: #18283d; --muted: #64758a; --green: #176b78; --green-dark: #124d62;
-  --line: #dce5ee; --paper: #fff; --mint: #e7f1f4; --amber: #bd7822; --lavender: #7165a5;
-}
-body { color: var(--ink); background: #f4f7fb; font-size: 14px; }
-.sidebar { background: #142b43; border-color: #142b43; color: #dbe7f1; }
-.brand, .profile strong { color: #f4f8fc; }
-.brand-mark { background: #d8edf0; color: #145c6a; border-radius: 12px; }
-.brand-dot { color: #66c2b4; }
-.brand small, .workspace-label { color: #9fb2c5; }
-.nav-link { color: #bccbd9; border-radius: 7px; }
-.nav-link:hover { background: #203c58; color: #fff; }
-.privacy-box { background: #1b3853; border-color: #35516a; color: #d9e5ef; }
-.privacy-box p, .model-tag { color: #aebfd0; }
-.model-tag, .profile { border-color: #35516a; }
-.main-content { background: #f4f7fb; }
-.topbar { background: #fff; border-color: var(--line); }
-.page-wrap { max-width: 1540px; }
-.page-heading h1 { color: #132a42; letter-spacing: -.045em; }
-.eyebrow, .workspace-label, .field-label { letter-spacing: .11em; }
-.button-primary { background: #176b78; border-color: #176b78; box-shadow: none; }
-.button-primary:hover { background: #124d62; }
-.guide-card { border-color: #c8dce3; background: #eaf3f6; }
-.metric-card, .panel, .assumption-panel, .model-note { border-color: #dce5ee; box-shadow: 0 1px 2px #17314d08; }
-.metric-card { background: #fff; border-radius: 9px; }
-.metric-value { color: #152e47; font-variant-numeric: tabular-nums; }
-.metric-icon, .heading-icon, .assumption-icon { background: #e7f1f4; color: #176b78; }
-.confidence-tag { color: #145b67; background: #e2f2f1; }
-.panel { border-radius: 9px; }
-.panel-heading h2, .scenario-heading h2 { color: #1a3048; }
-.chart-tick, .chart-data { font-variant-numeric: tabular-nums; }
-.assumption-panel input, .compare-panel select { border-color: #ccd9e4; background: #fbfdff; }
-.assumption-panel input:focus, .compare-panel select:focus { border-color: #398997; box-shadow: 0 0 0 3px #176b781b; }
-.page-footer { color: #687b8e; }
-@media (max-width: 820px) { .page-wrap { padding-top: 20px; } .metric-value { font-size: clamp(20px, 6vw, 28px); } }
-@media (max-width: 560px) { .main-content { min-width: 0; } .panel, .assumption-panel, .model-note { border-radius: 8px; } .page-heading h1 { font-size: 24px; } }
-
 /* Research-lab direction: mineral paper, forest ink, and evidence-first hierarchy. */
 :root {
   color: #23332d;
@@ -1421,6 +1382,15 @@ body, .main-content { color: var(--ink); background: #f2f0e8; }
   .metric-card:nth-child(2) { border-right: 0; }
   .metric-card:nth-child(-n+2) { border-bottom: 1px solid #d9ddd3; }
 }
+
+/* Shared legibility settings retained from the original dashboard. */
+body { font-size: 14px; }
+.brand-dot { color: #66c2b4; }
+.eyebrow, .workspace-label, .field-label { letter-spacing: .11em; }
+.metric-value, .chart-tick, .chart-data { font-variant-numeric: tabular-nums; }
+.button-primary:hover { background: #24584e; }
+@media (max-width: 820px) { .page-wrap { padding-top: 20px; } .metric-value { font-size: clamp(20px, 6vw, 28px); } }
+@media (max-width: 560px) { .main-content { min-width: 0; } .panel, .assumption-panel, .model-note { border-radius: 8px; } .page-heading h1 { font-size: 24px; } }
 
 /* Clinical operations studio: pathway first, evidence below. */
 .app-shell{display:block}

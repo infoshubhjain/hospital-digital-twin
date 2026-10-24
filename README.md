@@ -1,6 +1,6 @@
 # Hospital Operations Digital Twin
 
-[Frontend release audit](docs/frontend-audit.md)
+[Frontend release audit](docs/frontend-audit.md) · [Product design brief](docs/design-brief.md)
 
 **Live demo:** [hospital-digital-twin-mocha.vercel.app](https://hospital-digital-twin-mocha.vercel.app/)
 
@@ -37,7 +37,7 @@ Open http://localhost:3001. The app uses no persistence: each simulation result 
 1. Review or change arrivals in four six-hour blocks, acuity mix, service-time medians, ED providers/beds, inpatient beds, and admission share.
 2. Set horizon, warm-up, replication count, and random seed.
 3. Select an intervention (two added ED providers, four added ED beds, or a five percentage point lower admission share) and run the comparison.
-4. Scrub the care-pathway inspector to compare hourly queue, ED occupancy, boarding, and inpatient occupancy means, then inspect wait-time intervals and the full timeline. Export JSON for complete replication output or CSV for summary metrics.
+4. Scrub the care-pathway inspector or click the timeline to compare hourly queue, ED occupancy, boarding, and inpatient occupancy means. The timeline and inspector share one selected hour. Inspect wait-time intervals, then export JSON for complete replication output or CSV for summary metrics.
 
 The comparison pairs runs by reusing the same replication seeds. For each seed, the intervention wait median minus the baseline wait median is computed; the displayed paired effect uses the sample standard error and a two-sided 95% Student-t interval with n−1 degrees of freedom. Positive effects mean longer waits. This interval describes simulation variability under entered assumptions, not real-world or model uncertainty. Individual summary metric intervals also use Student-t critical values, but are not the paired intervention interval.
 

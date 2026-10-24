@@ -641,8 +641,14 @@ h1 {
   background: #9182bd;
 }
 .flow-chart {
+  cursor: crosshair;
   width: 100%;
   height: 200px;
+}
+.chart-instruction {
+  margin: 2px 0 6px;
+  color: #63776d;
+  font-size: 10px;
 }
 .chart-foot {
   display: flex;

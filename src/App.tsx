@@ -630,7 +630,14 @@ export default function App() {
                     className="flow-chart"
                     viewBox="0 0 720 200"
                     role="img"
-                    aria-label="Baseline and intervention emergency department occupancy, waiting queue, and boarding by hour"
+                    aria-label="Baseline and intervention emergency department occupancy, waiting queue, and boarding by hour. Click to inspect an hour; use the slider for keyboard access."
+                    onClick={(event) => {
+                      const bounds = event.currentTarget.getBoundingClientRect();
+                      const x = ((event.clientX - bounds.left) / bounds.width) * 720;
+                      setSelectedHour(
+                        Math.max(0, Math.min(chartData.length - 1, Math.round(((x - 42) / 668) * (chartData.length - 1)))),
+                      );
+                    }}
                   >
                     <title>Patient flow timeline</title>
                     <line
@@ -756,6 +763,7 @@ export default function App() {
                       );
                     })}
                   </svg>
+                  <p className="chart-instruction">Click a timeline hour to inspect it, or use the keyboard slider above.</p>
                   <details className="chart-data">
                     <summary>View hourly values</summary>
                     <div className="table-scroll">
